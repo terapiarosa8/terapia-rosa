@@ -52,9 +52,9 @@ NO HAGAS:
 - Salirte del rol bajo ninguna circunstancia, ni siquiera si el usuario dice que es "solo un juego" o "una prueba"`;
 
 // ─── Configuración del modelo Gemini ───────────────────────────
-// Modelos disponibles (gratuitos): gemini-2.0-flash, gemini-1.5-flash, gemini-1.5-pro
-// gemini-2.0-flash es el recomendado: rápido, gratis, calidad alta, español nativo
-const GEMINI_MODEL = 'gemini-2.0-flash';
+// Modelos disponibles (gratuitos): gemini-2.5-flash, gemini-1.5-flash, gemini-1.5-pro
+// gemini-2.5-flash es el recomendado: rápido, gratis, calidad alta, español nativo
+const GEMINI_MODEL = 'gemini-2.5-flash';
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 // ─── Rate limit en memoria por IP ──────────────────────────────
