@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F2EBE0">
+  <title>Yoga & Medita · Terapia Rosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Italiana&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .video-thumb-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: var(--rosa-base);
+      overflow: hidden;
+      border-radius: 18px;
+    }
+    .video-thumb-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .video-frame-wrap {
+      padding: 0 22px 12px;
+    }
+    #videoFrame {
+      display: none;
+    }
+    #videoFrame.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="page-header">
+      <a href="index.html" class="back-btn" aria-label="Volver">←</a>
+      <div>
+        <div class="page-eyebrow">Mueve y aquieta</div>
+        <div class="page-title">Yoga & medita</div>
+      </div>
+    </header>
+
+    <div class="combo-eyebrow">Yoga & meditación</div>
+    <div class="combo-title"><em>Mueve poquito, siente mucho</em></div>
+    <div class="combo-subtitle">Sin presión. A tu ritmo. Lo que tu cuerpo te pida hoy.</div>
+
+    <div class="tabs-row" id="tabsRow"></div>
+
+    <div id="featuredArea"></div>
+
+    <div class="video-frame-wrap" id="videoFrame"></div>
+
+    <div class="list-section-title">
+      <span><em>más movimiento</em></span>
+      <span class="right-label">A tu ritmo</span>
+    </div>
+
+    <div class="h-list" id="videoList"></div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script>
+    const videos = {
+      yoga: [
+        { videoId: 'Yzm4VKyQjTM', title: 'Yoga suave para cáncer de mama', author: 'Carolina · Bogotá', duration: 15, tag: 'Suave' },
+        { videoId: 'v7AYKMP6rOE', title: 'Yoga restaurativo en cama', author: 'Lucía · Medellín', duration: 20, tag: 'Muy suave' },
+        { videoId: 'ZzgXfXkbCSU', title: 'Saludo a tu cuerpo', author: 'Marisol · Cali', duration: 10, tag: 'Suave' },
+        { videoId: 'jMWzYqkfCZA', title: 'Estiramientos para días de fatiga', author: 'Carolina · Bogotá', duration: 12, tag: 'Muy suave' },
+      ],
+      medita: [
+        { videoId: 'inpok4MKVLM', title: 'Meditación de 5 minutos', author: 'Marisol · Cali', duration: 5, tag: 'Principiante' },
+        { videoId: 'O-6f5wQXSu8', title: 'Meditación guiada para sanación', author: 'Carolina · Bogotá', duration: 15, tag: 'Tranquilo' },
+        { videoId: 'aXItOY0sLRY', title: 'Body scan: escucha tu cuerpo', author: 'Lucía · Medellín', duration: 20, tag: 'Tranquilo' },
+        { videoId: '1ZYbU82GVz4', title: 'Meditación para dormir', author: 'Marisol · Cali', duration: 10, tag: 'Para dormir' },
+      ],
+    };
+
+    let currentTab = 'yoga';
+    const tabsRow = document.getElementById('tabsRow');
+    const featuredArea = document.getElementById('featuredArea');
+    const videoList = document.getElementById('videoList');
+    const videoFrame = document.getElementById('videoFrame');
+
+    function renderTabs() {
+      const tabs = [
+        { id: 'yoga', label: 'Yoga suave', count: videos.yoga.length },
+        { id: 'medita', label: 'Meditaciones', count: videos.medita.length },
+      ];
+      tabsRow.innerHTML = tabs.map(t => `
+        <button class="tab-pill ${t.id === currentTab ? 'active' : ''}" data-tab="${t.id}">
+          ${t.label} <span class="count">(${t.count})</span>
+        </button>
+      `).join('');
+      tabsRow.querySelectorAll('.tab-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentTab = btn.dataset.tab;
+          videoFrame.classList.remove('active');
+          videoFrame.innerHTML = '';
+          render();
+        });
+      });
+    }
+
+    function playVideo(videoId) {
+      videoFrame.innerHTML = `
+        <div class="video-thumb-wrap">
+          <iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0"
+                  title="Video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+        </div>
+      `;
+      videoFrame.classList.add('active');
+      setTimeout(() => videoFrame.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    }
+
+    function renderFeatured() {
+      const list = videos[currentTab];
+      const featured = list[0];
+      const tagLabel = currentTab === 'yoga' ? 'Recomendado hoy' : 'Para hoy';
+      featuredArea.innerHTML = `
+        <div class="featured-card" id="featuredCard">
+          <div class="featured-thumb" style="overflow:hidden;">
+            <img src="https://i.ytimg.com/vi/${featured.videoId}/hqdefault.jpg"
+                 alt="${escapeHtml(featured.title)}"
+                 style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.7;">
+            <div class="play-icon" style="position:relative; z-index:2;">▶</div>
+            <div class="featured-duration">${featured.duration} min</div>
+          </div>
+          <div class="featured-meta">
+            <div class="featured-tag">${tagLabel}</div>
+            <div class="featured-title">${escapeHtml(featured.title)}</div>
+            <div class="featured-sub">${escapeHtml(featured.author)} · ${escapeHtml(featured.tag)}</div>
+          </div>
+        </div>
+      `;
+      document.getElementById('featuredCard').addEventListener('click', () => playVideo(featured.videoId));
+    }
+
+    function renderList() {
+      const list = videos[currentTab].slice(1);
+      videoList.innerHTML = list.map((v, i) => `
+        <div class="h-item" data-video="${v.videoId}">
+          <div class="h-item-thumb green">▶</div>
+          <div class="h-item-meta">
+            <div class="h-item-title">${escapeHtml(v.title)}</div>
+            <div class="h-item-sub">${escapeHtml(v.author)} · ${escapeHtml(v.tag)}</div>
+          </div>
+          <div class="h-item-badge">${v.duration} min</div>
+        </div>
+      `).join('');
+      videoList.querySelectorAll('.h-item').forEach(el => {
+        el.addEventListener('click', () => playVideo(el.dataset.video));
+      });
+    }
+
+    function render() {
+      renderTabs();
+      renderFeatured();
+      renderList();
+    }
+
+    render();
+  </script>
+  <script src="js/nav.js"></script>
+  <script src="js/analytics.js"></script>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F2EBE0">
+  <title>Diario · Terapia Rosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Italiana&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .diario-container {
+      padding: 0 22px;
+    }
+
+    .date-display {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 18px;
+      color: var(--texto-suave);
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+
+    .diario-textarea {
+      width: 100%;
+      min-height: 360px;
+      background: var(--papel);
+      border: 1px solid rgba(168, 103, 90, 0.18);
+      border-radius: 18px;
+      padding: 20px;
+      font-family: var(--serif);
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--texto-oscuro);
+      resize: vertical;
+      background-image: linear-gradient(transparent 0px, transparent 28px, rgba(168, 103, 90, 0.08) 28px, rgba(168, 103, 90, 0.08) 29px);
+      background-size: 100% 30px;
+    }
+    .diario-textarea::placeholder {
+      color: var(--texto-suave);
+      opacity: 0.6;
+      font-style: italic;
+    }
+    .diario-footer-note {
+      text-align: center;
+      font-size: 11px;
+      color: var(--texto-suave);
+      margin-top: 14px;
+      font-style: italic;
+    }
+
+    .diario-textarea:focus {
+      border-color: var(--rosa-fuerte);
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .actions .btn {
+      flex: 1;
+    }
+
+    .saved-msg {
+      text-align: center;
+      color: var(--verde-oscuro);
+      font-size: 13px;
+      margin-top: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .saved-msg.show { opacity: 1; }
+
+    .past-toggle {
+      margin-top: 24px;
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--papel);
+      border: 1px solid rgba(168, 103, 90, 0.18);
+      border-radius: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 15px;
+      color: var(--texto-suave);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .past-toggle:hover { background: var(--crema-profunda); }
+    .past-toggle .count-pill {
+      background: var(--rosa-base);
+      color: var(--rosa-profundo);
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-family: var(--sans);
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+    .past-toggle .arrow { font-size: 14px; transition: transform 0.2s; }
+    .past-toggle.open .arrow { transform: rotate(180deg); }
+
+    .past-list {
+      margin-top: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .past-list.open { display: flex; }
+
+    .past-entry {
+      background: var(--papel);
+      border: 1px solid rgba(168, 103, 90, 0.15);
+      border-radius: 14px;
+      padding: 14px 16px;
+    }
+    .past-entry .date {
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--rosa-profundo);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .past-entry .text {
+      font-family: var(--serif);
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--texto-oscuro);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .past-entry .delete-btn {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--texto-suave);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px 0;
+      font-style: italic;
+    }
+    .past-entry .delete-btn:hover { color: var(--rosa-profundo); }
+
+    .empty-past {
+      text-align: center;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--texto-suave);
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="page-header">
+      <a href="mi-espacio.html" class="back-btn" aria-label="Volver">←</a>
+      <div>
+        <div class="page-eyebrow">Solo para ti</div>
+        <div class="page-title">Diario</div>
+      </div>
+    </header>
+
+    <div class="combo-eyebrow">Mi espacio</div>
+    <div class="combo-title"><em>Aquí hablas contigo</em></div>
+
+    <div class="tabs-row" id="diaryTabs">
+      <button class="tab-pill active" data-tab="hoy">Diario de hoy</button>
+      <button class="tab-pill" data-tab="futuro">Carta al futuro</button>
+    </div>
+
+    <div class="diario-container">
+      <div class="date-display" id="dateDisplay"></div>
+
+      <textarea
+        id="diarioText"
+        class="diario-textarea"
+        placeholder="hoy fue raro. pero también vi cómo entraba la luz por la ventana del hospital y por un segundo me sentí en paz. eso cuenta."></textarea>
+
+      <div class="diario-footer-note" id="autoSavedNote">guardado</div>
+
+      <div class="actions" style="margin-top: 16px;">
+        <button class="btn btn-soft" id="clearBtn">🗑 Borrar</button>
+        <button class="btn btn-primary" id="downloadBtn">↓ Descargar mi diario</button>
+      </div>
+
+      <div id="pastSection">
+        <button class="past-toggle" id="pastToggle">
+          <span><em>Lo que has escrito antes</em></span>
+          <span style="display:flex; align-items:center; gap:10px;">
+            <span class="count-pill" id="pastCount">0</span>
+            <span class="arrow">▼</span>
+          </span>
+        </button>
+        <div class="past-list" id="pastList"></div>
+      </div>
+
+      <div class="diario-footer-note" style="margin-top: 18px;">
+        Solo tú puedes leer esto. Está en tu celular.<br>
+        <span style="opacity:0.85;">Si quieres conservarlo, descárgalo de vez en cuando 🌸</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script>
+    // ─── Constantes ──────────────────────────────────────────
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                   'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    const hoy = new Date();
+    const hoyKey = hoy.toISOString().split('T')[0]; // YYYY-MM-DD
+    const fechaTexto = `${diaSemana()} ${hoy.getDate()} de ${meses[hoy.getMonth()]}`;
+
+    // Storage keys
+    const HISTORIAL_KEY = 'diario-historial';      // Array de {date, text}
+    const BORRADOR_KEY = 'diario-borrador';         // {date, text} — el draft activo
+    const FUTURO_KEY = 'diario-carta-futuro';
+
+    // ─── Migración de versiones anteriores ───────────────────
+    // Las versiones viejas guardaban una entrada por día con keys
+    // como "terapia-rosa.diario-2026-04-30" (Storage añade el prefijo).
+    // Las migramos al nuevo historial.
+    function migrarKeysViejas() {
+      const historial = Storage.get(HISTORIAL_KEY, []);
+      const fechasYaMigradas = new Set(historial.map(e => e.date));
+      let migradas = 0;
+      const llavesABorrar = [];
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (!key) continue;
+        const m = key.match(/^terapia-rosa\.diario-(\d{4}-\d{2}-\d{2})$/);
+        if (!m) continue;
+        const fecha = m[1];
+        // No migrar el borrador del día actual (lo manejamos aparte)
+        if (fecha === hoyKey) continue;
+        if (fechasYaMigradas.has(fecha)) {
+          llavesABorrar.push(key);
+          continue;
+        }
+        try {
+          const raw = localStorage.getItem(key);
+          const text = JSON.parse(raw);
+          if (typeof text === 'string' && text.trim()) {
+            historial.push({ date: fecha, text });
+            migradas++;
+          }
+        } catch (e) { /* ignore */ }
+        llavesABorrar.push(key);
+      }
+
+      if (migradas > 0) {
+        historial.sort((a, b) => b.date.localeCompare(a.date));
+        Storage.set(HISTORIAL_KEY, historial);
+      }
+      llavesABorrar.forEach(k => localStorage.removeItem(k));
+    }
+    migrarKeysViejas();
+
+    // ─── Archivar borrador si es de un día anterior ──────────
+    // Si la usuaria escribió ayer y vuelve hoy, el borrador de ayer
+    // pasa al historial automáticamente.
+    function archivarBorradorViejo() {
+      const borrador = Storage.get(BORRADOR_KEY, null);
+      if (!borrador || !borrador.date || borrador.date === hoyKey) return;
+      if (!borrador.text || !borrador.text.trim()) {
+        Storage.remove(BORRADOR_KEY);
+        return;
+      }
+      const historial = Storage.get(HISTORIAL_KEY, []);
+      // Si ya existe una entrada para esa fecha, la fusiona
+      const existente = historial.findIndex(e => e.date === borrador.date);
+      if (existente >= 0) {
+        historial[existente].text += '\n\n' + borrador.text;
+      } else {
+        historial.push({ date: borrador.date, text: borrador.text });
+      }
+      historial.sort((a, b) => b.date.localeCompare(a.date));
+      Storage.set(HISTORIAL_KEY, historial);
+      Storage.remove(BORRADOR_KEY);
+    }
+    archivarBorradorViejo();
+
+    // ─── Refs DOM ────────────────────────────────────────────
+    const textarea = document.getElementById('diarioText');
+    const note = document.getElementById('autoSavedNote');
+    const dateEl = document.getElementById('dateDisplay');
+    const pastToggle = document.getElementById('pastToggle');
+    const pastList = document.getElementById('pastList');
+    const pastCount = document.getElementById('pastCount');
+    const pastSection = document.getElementById('pastSection');
+    note.style.opacity = '0';
+
+    let activeTab = 'hoy';
+
+    // ─── Helpers de fecha ────────────────────────────────────
+    function fechaBonita(isoDate) {
+      const [y, m, d] = isoDate.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      const dias = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+      return `${dias[dt.getDay()]} ${d} de ${meses[m - 1]}`;
+    }
+
+    // ─── Cargar el contenido del tab activo ──────────────────
+    function loadActive() {
+      if (activeTab === 'hoy') {
+        const borrador = Storage.get(BORRADOR_KEY, null);
+        textarea.value = (borrador && borrador.date === hoyKey) ? borrador.text : '';
+        dateEl.textContent = fechaTexto.charAt(0).toUpperCase() + fechaTexto.slice(1);
+        textarea.placeholder = 'hoy fue raro. pero también vi cómo entraba la luz por la ventana del hospital y por un segundo me sentí en paz. eso cuenta.';
+        pastSection.style.display = '';
+        renderPast();
+      } else {
+        textarea.value = Storage.get(FUTURO_KEY, '');
+        dateEl.textContent = 'Para ti, en unos meses';
+        textarea.placeholder = 'Querida yo del futuro: cuando leas esto, ya habrás caminado más de lo que creías posible...';
+        pastSection.style.display = 'none';
+      }
+    }
+
+    // ─── Render del historial (entradas pasadas) ─────────────
+    function renderPast() {
+      const historial = Storage.get(HISTORIAL_KEY, []);
+      pastCount.textContent = String(historial.length);
+      pastList.replaceChildren();
+
+      if (historial.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-past';
+        empty.textContent = 'Cuando escribas hoy y vuelvas mañana, lo de hoy aparecerá aquí. 🌸';
+        pastList.appendChild(empty);
+        return;
+      }
+
+      historial.forEach((entry, idx) => {
+        const card = document.createElement('div');
+        card.className = 'past-entry';
+
+        const dateDiv = document.createElement('div');
+        dateDiv.className = 'date';
+        dateDiv.textContent = fechaBonita(entry.date);
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'text';
+        textDiv.textContent = entry.text;
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'delete-btn';
+        delBtn.textContent = '🗑 Borrar esta entrada';
+        delBtn.addEventListener('click', () => {
+          if (!confirm('¿Borrar la entrada del ' + fechaBonita(entry.date) + '?')) return;
+          const list = Storage.get(HISTORIAL_KEY, []);
+          list.splice(idx, 1);
+          Storage.set(HISTORIAL_KEY, list);
+          renderPast();
+        });
+
+        card.appendChild(dateDiv);
+        card.appendChild(textDiv);
+        card.appendChild(delBtn);
+        pastList.appendChild(card);
+      });
+    }
+
+    // ─── Auto-guardar mientras escribe ───────────────────────
+    let saveTimeout;
+    textarea.addEventListener('input', () => {
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(() => {
+        if (activeTab === 'hoy') {
+          Storage.set(BORRADOR_KEY, { date: hoyKey, text: textarea.value });
+        } else {
+          Storage.set(FUTURO_KEY, textarea.value);
+        }
+        note.style.opacity = '1';
+        setTimeout(() => { note.style.opacity = '0'; }, 1600);
+      }, 600);
+    });
+
+    // ─── Tabs ────────────────────────────────────────────────
+    document.querySelectorAll('#diaryTabs .tab-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#diaryTabs .tab-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeTab = btn.dataset.tab;
+        loadActive();
+      });
+    });
+
+    // ─── Toggle del historial ────────────────────────────────
+    pastToggle.addEventListener('click', () => {
+      pastToggle.classList.toggle('open');
+      pastList.classList.toggle('open');
+    });
+
+    // ─── Borrar (solo el día activo / la carta) ──────────────
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if (textarea.value && !confirm('¿Borrar lo que estás escribiendo ahora? (Las entradas anteriores no se tocan.)')) return;
+      textarea.value = '';
+      if (activeTab === 'hoy') {
+        Storage.remove(BORRADOR_KEY);
+      } else {
+        Storage.remove(FUTURO_KEY);
+      }
+    });
+
+    // ─── Descargar TODO el diario ────────────────────────────
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      if (activeTab === 'futuro') {
+        if (!textarea.value.trim()) {
+          alert('Escribe algo primero 🌸');
+          return;
+        }
+        const contenido = `Carta al futuro · Terapia Rosa\n${fechaTexto}\n\n${textarea.value}\n`;
+        descargar(contenido, 'carta-al-futuro.txt');
+        return;
+      }
+
+      // Tab "hoy" — descarga TODO el historial + borrador actual
+      const historial = Storage.get(HISTORIAL_KEY, []);
+      const borradorActual = textarea.value.trim();
+      if (historial.length === 0 && !borradorActual) {
+        alert('Escribe algo primero 🌸');
+        return;
+      }
+
+      let contenido = `Mi diario · Terapia Rosa\nDescargado el ${fechaTexto}\n\n`;
+      contenido += '═══════════════════════════════════════\n\n';
+
+      if (borradorActual) {
+        contenido += `${fechaTexto.charAt(0).toUpperCase() + fechaTexto.slice(1)} (hoy)\n\n${borradorActual}\n\n`;
+        contenido += '───────────────────────────────────────\n\n';
+      }
+
+      historial.forEach(entry => {
+        contenido += `${fechaBonita(entry.date)}\n\n${entry.text}\n\n`;
+        contenido += '───────────────────────────────────────\n\n';
+      });
+
+      descargar(contenido, `mi-diario-${hoyKey}.txt`);
+    });
+
+    function descargar(contenido, nombre) {
+      const blob = new Blob([contenido], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = nombre;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    loadActive();
+  </script>
+  <script src="js/nav.js"></script>
+  <script src="js/analytics.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#E0C4B6">
+  <title>Respira · Terapia Rosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Italiana&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div class="app">
+    <div class="respira-bg">
+
+      <header class="page-header">
+        <a href="index.html" class="back-btn" aria-label="Volver">←</a>
+        <div>
+          <div class="page-eyebrow">Pausa de</div>
+          <div class="page-title"><em>respiración</em></div>
+        </div>
+      </header>
+
+      <div class="music-toggle-row">
+        <label class="music-toggle">
+          <input type="checkbox" id="musicToggle" checked>
+          <span class="music-toggle-track">
+            <span class="music-toggle-thumb"></span>
+          </span>
+          <span class="music-toggle-label">🎵 Música suave</span>
+        </label>
+      </div>
+
+      <div class="breath-stage">
+        <div class="breath-flower-wrap">
+          <svg class="breath-flower" id="breathFlower" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="sphereGradient" cx="38%" cy="32%" r="65%">
+                <stop offset="0%"   stop-color="#F2EBE0" stop-opacity="0.95"/>
+                <stop offset="40%"  stop-color="#E0C4B6" stop-opacity="0.95"/>
+                <stop offset="100%" stop-color="#C9968A" stop-opacity="0.95"/>
+              </radialGradient>
+              <filter id="sphereShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+                <feOffset dx="0" dy="6" result="offsetblur"/>
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.25"/>
+                </feComponentTransfer>
+                <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <ellipse class="petalo petalo-1" cx="170" cy="80"  rx="50" ry="130"/>
+            <ellipse class="petalo petalo-2" cx="170" cy="80"  rx="50" ry="130"/>
+            <ellipse class="petalo petalo-3" cx="170" cy="80"  rx="50" ry="130"/>
+            <ellipse class="petalo petalo-4" cx="170" cy="80"  rx="50" ry="130"/>
+            <ellipse class="petalo petalo-5" cx="170" cy="80"  rx="50" ry="130"/>
+            <circle class="esfera" cx="170" cy="170" r="105"
+                    fill="url(#sphereGradient)" filter="url(#sphereShadow)"/>
+            <ellipse cx="148" cy="135" rx="42" ry="22" fill="#FAF4EA" opacity="0.35"/>
+          </svg>
+          <div class="breath-text-wrap">
+            <div class="breath-text"    id="breathText">Comienza</div>
+            <div class="breath-subtext" id="breathSubtext">toca para empezar</div>
+          </div>
+        </div>
+
+        <div class="breath-counter">
+          <div class="label">Ciclo</div>
+          <div class="number">
+            <span id="cycleNum">0</span> de <span id="cycleTotal">5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="breath-controls" id="breathControls">
+        <button class="btn btn-primary" id="startBtn">Comenzar</button>
+      </div>
+
+      <div class="breath-info" style="font-style: italic; line-height: 1.55;">
+        Sin prisa. Si te cuesta seguir el ritmo, respira a tu manera.<br>
+        El aire también te conoce.
+      </div>
+      <div class="breath-info" style="font-size: 11px; opacity: 0.7; margin-top: 8px; letter-spacing: 0.5px;">
+        Inhala 4 · Sostén 4 · Exhala 6
+      </div>
+
+    </div><!-- .respira-bg -->
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/respiracion.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/analytics.js"></script>
+</body>
+</html>

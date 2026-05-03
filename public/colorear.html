@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F2EBE0">
+  <title>Colorear · Terapia Rosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Italiana&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .colorear-container {
+      padding-bottom: 100px;
+    }
+
+    .canvas-area {
+      padding: 0 22px 16px;
+    }
+
+    .canvas-frame {
+      background: var(--papel);
+      border-radius: 22px;
+      padding: 24px;
+      border: 1px solid rgba(168, 103, 90, 0.1);
+      display: grid;
+      place-items: center;
+    }
+
+    .canvas-frame svg {
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+    }
+
+    .canvas-frame svg .colorable {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .canvas-frame svg .colorable:hover {
+      opacity: 0.85;
+    }
+
+    .palette-section {
+      padding: 0 22px;
+    }
+
+    .palette-label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--texto-suave);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .swatch {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .swatch:hover {
+      transform: scale(1.05);
+    }
+
+    .swatch.selected {
+      border-color: var(--rosa-profundo);
+      box-shadow: 0 0 0 2px var(--crema), 0 0 0 4px var(--rosa-profundo);
+    }
+
+    .designs-row {
+      display: flex;
+      gap: 8px;
+      padding: 0 22px 16px;
+      overflow-x: auto;
+    }
+
+    .design-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      background: var(--papel);
+      border: 2px solid transparent;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      padding: 8px;
+    }
+
+    .design-thumb.active {
+      border-color: var(--rosa-fuerte);
+    }
+
+    .design-thumb svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      padding: 16px 22px;
+    }
+
+    .actions .btn {
+      flex: 1;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="colorear-container">
+      <header class="page-header">
+        <a href="index.html" class="back-btn" aria-label="Volver">←</a>
+        <div>
+          <div class="page-eyebrow">Pinta sin pensar</div>
+          <div class="page-title">Colorear</div>
+        </div>
+      </header>
+
+      <div class="designs-row" id="designsRow"></div>
+
+      <div class="canvas-area">
+        <div class="canvas-frame" id="canvasFrame"></div>
+      </div>
+
+      <div class="palette-section">
+        <div class="palette-label">Elige un color</div>
+        <div class="palette" id="palette"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-soft" id="resetBtn">↺ Reiniciar</button>
+        <button class="btn btn-primary" id="downloadBtn">↓ Guardar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    // ─── Paleta de 12 colores cálidos ─────────────────────────
+    const palette = [
+      '#C9968A', '#8B5E4C', '#E0C4B6', '#D4AFA0',
+      '#A8AE93', '#878D75', '#F2EBE0', '#E8DECE',
+      '#D8C0B0', '#FAF4EA', '#B5D4C8', '#E8C4B8',
+    ];
+
+    // ─── Diseños SVG (mandala, flor, mariposa, frase) ─────────
+    const designs = [
+      {
+        name: 'Mandala',
+        thumb: `<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="20" fill="#E0C4B6"/><circle cx="30" cy="30" r="10" fill="#C9968A"/></svg>`,
+        svg: `
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <circle class="colorable" cx="200" cy="200" r="180" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2"/>
+            ${[0, 60, 120, 180, 240, 300].map(deg => `
+              <ellipse class="colorable" cx="200" cy="80" rx="40" ry="80" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2" transform="rotate(${deg} 200 200)"/>
+            `).join('')}
+            ${[30, 90, 150, 210, 270, 330].map(deg => `
+              <ellipse class="colorable" cx="200" cy="100" rx="25" ry="50" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2" transform="rotate(${deg} 200 200)"/>
+            `).join('')}
+            <circle class="colorable" cx="200" cy="200" r="50" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2"/>
+            <circle class="colorable" cx="200" cy="200" r="25" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2"/>
+            <circle class="colorable" cx="200" cy="200" r="8" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2"/>
+          </svg>
+        `,
+      },
+      {
+        name: 'Flor',
+        thumb: `<svg viewBox="0 0 60 60"><g transform="translate(30 30)"><ellipse cx="0" cy="-12" rx="8" ry="14" fill="#C9968A"/><ellipse cx="0" cy="-12" rx="8" ry="14" fill="#C9968A" transform="rotate(72)"/><ellipse cx="0" cy="-12" rx="8" ry="14" fill="#C9968A" transform="rotate(144)"/><ellipse cx="0" cy="-12" rx="8" ry="14" fill="#C9968A" transform="rotate(216)"/><ellipse cx="0" cy="-12" rx="8" ry="14" fill="#C9968A" transform="rotate(288)"/></g></svg>`,
+        svg: `
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(200 200)">
+              ${[0, 72, 144, 216, 288].map(deg => `
+                <ellipse class="colorable" cx="0" cy="-90" rx="55" ry="100" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5" transform="rotate(${deg})"/>
+              `).join('')}
+              ${[36, 108, 180, 252, 324].map(deg => `
+                <ellipse class="colorable" cx="0" cy="-70" rx="35" ry="70" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5" transform="rotate(${deg})"/>
+              `).join('')}
+              <circle class="colorable" cx="0" cy="0" r="40" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5"/>
+              <circle class="colorable" cx="0" cy="0" r="20" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5"/>
+            </g>
+            <path class="colorable" d="M 200 280 Q 200 320 200 380" fill="none" stroke="#8B5E4C" stroke-width="3"/>
+            <ellipse class="colorable" cx="160" cy="320" rx="35" ry="14" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2" transform="rotate(-25 160 320)"/>
+            <ellipse class="colorable" cx="240" cy="340" rx="35" ry="14" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2" transform="rotate(25 240 340)"/>
+          </svg>
+        `,
+      },
+      {
+        name: 'Mariposa',
+        thumb: `<svg viewBox="0 0 60 60"><ellipse cx="20" cy="22" rx="14" ry="17" fill="#C9968A" transform="rotate(-20 20 22)"/><ellipse cx="40" cy="22" rx="14" ry="17" fill="#C9968A" transform="rotate(20 40 22)"/></svg>`,
+        svg: `
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <ellipse class="colorable" cx="130" cy="160" rx="90" ry="110" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5" transform="rotate(-20 130 160)"/>
+            <ellipse class="colorable" cx="270" cy="160" rx="90" ry="110" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5" transform="rotate(20 270 160)"/>
+            <ellipse class="colorable" cx="130" cy="270" rx="60" ry="70" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5" transform="rotate(-10 130 270)"/>
+            <ellipse class="colorable" cx="270" cy="270" rx="60" ry="70" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5" transform="rotate(10 270 270)"/>
+            <circle class="colorable" cx="130" cy="160" r="20" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2"/>
+            <circle class="colorable" cx="270" cy="160" r="20" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2"/>
+            <ellipse class="colorable" cx="200" cy="220" rx="15" ry="100" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5"/>
+            <circle class="colorable" cx="200" cy="120" r="14" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5"/>
+          </svg>
+        `,
+      },
+      {
+        name: 'Corazón',
+        thumb: `<svg viewBox="0 0 60 60"><path d="M30 50 C 14 40 8 30 14 22 C 19 15 27 17 30 23 C 33 17 41 15 46 22 C 52 30 46 40 30 50 Z" fill="#C9968A"/></svg>`,
+        svg: `
+          <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <path class="colorable" d="M 200 340 C 80 280 30 200 90 130 C 130 80 180 100 200 150 C 220 100 270 80 310 130 C 370 200 320 280 200 340 Z" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="3"/>
+            <path class="colorable" d="M 200 290 C 130 250 100 200 130 165 C 160 130 195 145 200 170 C 205 145 240 130 270 165 C 300 200 270 250 200 290 Z" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2.5"/>
+            <path class="colorable" d="M 200 250 C 160 230 145 200 160 180 C 180 160 200 175 200 190 C 200 175 220 160 240 180 C 255 200 240 230 200 250 Z" fill="#FAF4EA" stroke="#8B5E4C" stroke-width="2"/>
+          </svg>
+        `,
+      },
+    ];
+
+    let selectedColor = palette[0];
+    let currentDesign = 0;
+
+    const designsRow = document.getElementById('designsRow');
+    const canvasFrame = document.getElementById('canvasFrame');
+    const paletteEl = document.getElementById('palette');
+
+    // Render designs
+    designs.forEach((d, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'design-thumb' + (i === 0 ? ' active' : '');
+      btn.innerHTML = d.thumb;
+      btn.dataset.idx = i;
+      btn.title = d.name;
+      btn.addEventListener('click', () => loadDesign(i));
+      designsRow.appendChild(btn);
+    });
+
+    // Render palette
+    palette.forEach((color, i) => {
+      const sw = document.createElement('button');
+      sw.className = 'swatch' + (i === 0 ? ' selected' : '');
+      sw.style.background = color;
+      sw.dataset.color = color;
+      sw.addEventListener('click', () => {
+        document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+        sw.classList.add('selected');
+        selectedColor = color;
+      });
+      paletteEl.appendChild(sw);
+    });
+
+    function loadDesign(idx) {
+      currentDesign = idx;
+      document.querySelectorAll('.design-thumb').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.design-thumb')[idx].classList.add('active');
+      canvasFrame.innerHTML = designs[idx].svg;
+
+      // Bind clicks to colorable elements
+      canvasFrame.querySelectorAll('.colorable').forEach(el => {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          el.setAttribute('fill', selectedColor);
+        });
+      });
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      loadDesign(currentDesign);
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const svg = canvasFrame.querySelector('svg');
+      if (!svg) return;
+      const serializer = new XMLSerializer();
+      const svgStr = serializer.serializeToString(svg);
+      const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `terapia-rosa-${designs[currentDesign].name.toLowerCase()}.svg`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Init
+    loadDesign(0);
+  </script>
+</body>
+</html>

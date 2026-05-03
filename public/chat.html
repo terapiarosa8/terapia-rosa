@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F2EBE0">
+  <title>Habla con Alma · Terapia Rosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Italiana&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div class="app">
+    <div class="chat-container">
+
+      <header class="chat-header">
+        <a href="index.html" class="back-btn" aria-label="Volver">←</a>
+        <div class="alma-avatar">
+          <svg width="24" height="24" viewBox="0 0 60 60">
+            <g transform="translate(30 28)">
+              <ellipse cx="0" cy="-13" rx="8" ry="13" fill="#F2EBE0" opacity="0.9"/>
+              <ellipse cx="0" cy="-13" rx="8" ry="13" fill="#F2EBE0" opacity="0.9" transform="rotate(72)"/>
+              <ellipse cx="0" cy="-13" rx="8" ry="13" fill="#F2EBE0" opacity="0.9" transform="rotate(144)"/>
+              <ellipse cx="0" cy="-13" rx="8" ry="13" fill="#F2EBE0" opacity="0.9" transform="rotate(216)"/>
+              <ellipse cx="0" cy="-13" rx="8" ry="13" fill="#F2EBE0" opacity="0.9" transform="rotate(288)"/>
+              <circle r="6" fill="#C9968A"/>
+            </g>
+          </svg>
+        </div>
+        <div class="alma-info">
+          <div class="alma-name"><em>Alma</em></div>
+          <div class="alma-status" style="letter-spacing:1.5px; text-transform:uppercase; font-size:9px; font-weight:600;">· Te encuentra lo que necesitas</div>
+        </div>
+        <button class="icon-btn chat-clear-btn" id="clearBtn"
+                aria-label="Limpiar conversación" title="Limpiar conversación (privacidad)">🧹</button>
+      </header>
+
+      <div class="messages-area" id="messagesArea">
+        <div class="message-time" style="text-align:center; font-size:11px; color:var(--texto-suave); padding:8px 0 12px; letter-spacing:0.5px;">Hoy · <span id="chatTimeNow"></span></div>
+        <div class="message alma">
+          Hola, mi linda 🌸 Soy Alma. Aquí estoy, sin prisa.
+        </div>
+        <div class="message alma">
+          Cuéntame cómo te sientes o qué necesitas ahorita. Puedo ayudarte a encontrar lo que tenemos en el app — un video, una respiración, un juego, lo que sea.
+        </div>
+      </div>
+
+      <div class="quick-replies" id="quickReplies">
+        <button class="quick-reply" data-msg="Tengo náuseas">Tengo náuseas</button>
+        <button class="quick-reply" data-msg="Tengo miedo">Tengo miedo</button>
+        <button class="quick-reply" data-msg="No puedo dormir">No puedo dormir</button>
+        <button class="quick-reply" data-msg="Estoy ansiosa">Estoy ansiosa</button>
+        <button class="quick-reply" data-msg="Necesito distraerme">Necesito distraerme</button>
+        <button class="quick-reply" data-msg="Quiero llorar">Quiero llorar</button>
+      </div>
+
+      <div class="input-area">
+        <textarea id="inputText" class="input-text"
+          placeholder="Escríbele a Alma..."
+          rows="1" maxlength="1000"></textarea>
+        <button class="send-btn" id="sendBtn" aria-label="Enviar">→</button>
+      </div>
+
+    </div><!-- .chat-container -->
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script>
+    (function () {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const el = document.getElementById('chatTimeNow');
+      if (el) el.textContent = `${hh}:${mm}`;
+    })();
+  </script>
+  <script src="js/chat.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/analytics.js"></script>
+</body>
+</html>

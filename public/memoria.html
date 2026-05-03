@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F2EBE0">
+  <title>Memoria · Terapia Rosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Italiana&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div class="app">
+    <header class="page-header">
+      <a href="juegos.html" class="back-btn" aria-label="Volver">←</a>
+      <div>
+        <div class="page-eyebrow">Sin presión</div>
+        <div class="page-title">Encuentra las parejas</div>
+      </div>
+    </header>
+
+    <div class="memoria-container">
+      <div class="memoria-stats">
+        <div><span class="label">Movimientos</span><span class="value" id="memMoves">0</span></div>
+        <div><span class="label">Parejas</span><span class="value"><span id="memFound">0</span> de <span id="memTotal">6</span></span></div>
+      </div>
+      <div class="memoria-grid" id="memoriaGrid"></div>
+      <div class="actions">
+        <button class="btn btn-soft" id="newGameBtn">↻ Nuevo juego</button>
+      </div>
+    </div>
+
+  </div>
+  <script src="js/utils.js"></script>
+  <script src="js/memoria.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    document.getElementById('newGameBtn').addEventListener('click', newMemoria);
+    newMemoria();
+  </script>
+</body>
+</html>

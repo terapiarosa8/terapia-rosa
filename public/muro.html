@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F2EBE0">
+  <title>Muro · Terapia Rosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Italiana&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+  <style>
+    .muro-container {
+      padding: 0 22px;
+    }
+
+    .add-message {
+      background: rgba(168, 174, 147, 0.16);
+      border: 1px solid rgba(168, 174, 147, 0.45);
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 22px;
+    }
+    .add-message-eyebrow {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--serif); font-style: italic;
+      color: var(--verde-oscuro); font-size: 15px; font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .add-message-eyebrow .dot { font-size: 18px; }
+    .add-message-helper {
+      font-size: 11px; color: var(--verde-oscuro);
+      opacity: 0.75; margin-bottom: 10px;
+    }
+
+    .add-message-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--texto-oscuro);
+      font-family: var(--sans);
+      padding: 8px 4px;
+      resize: none;
+      min-height: 40px;
+    }
+
+    .add-message-input:focus { outline: none; }
+
+    .add-message-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      gap: 12px;
+    }
+
+    .name-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid var(--rosa-base);
+      border-radius: 999px;
+      background: var(--crema);
+      font-size: 13px;
+    }
+
+    .add-btn {
+      padding: 8px 18px;
+      background: var(--rosa-fuerte);
+      color: var(--crema);
+      border-radius: 999px;
+      font-size: 13px;
+    }
+
+    .add-btn:disabled {
+      opacity: 0.4;
+    }
+
+    .char-count {
+      font-size: 11px;
+      color: var(--texto-suave);
+      margin-top: 4px;
+    }
+
+    .messages-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .postit {
+      padding: 16px 14px;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(46, 36, 32, 0.12);
+      font-family: var(--serif);
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--texto-oscuro);
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .postit .author {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(46, 36, 32, 0.6);
+      margin-top: 8px;
+      font-family: var(--sans);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="page-header">
+      <a href="mi-espacio.html" class="back-btn" aria-label="Volver">←</a>
+      <div>
+        <div class="page-eyebrow">Comunidad</div>
+        <div class="page-title">Muro</div>
+      </div>
+    </header>
+
+    <div class="combo-eyebrow">Muro de la comunidad</div>
+    <div class="combo-title"><em>No estás sola</em></div>
+    <div class="combo-subtitle">Mensajes anónimos de mujeres que también caminan este camino.</div>
+
+    <div class="muro-container">
+      <div class="add-message">
+        <div class="add-message-eyebrow">
+          <span class="dot">✿</span>
+          <span>Deja tu huella</span>
+        </div>
+        <div class="add-message-helper">Una frase, sin firma. La que necesites.</div>
+        <textarea
+          class="add-message-input"
+          id="msgInput"
+          placeholder="Escribe lo que quisieras leer hoy..."
+          maxlength="140"
+          rows="2"></textarea>
+        <div class="char-count"><span id="charCount">0</span>/140</div>
+        <div class="add-message-meta">
+          <input
+            type="text"
+            class="name-input"
+            id="nameInput"
+            placeholder="Cómo te llamas (opcional)"
+            maxlength="30">
+          <button class="add-btn" id="addBtn" disabled>Publicar</button>
+        </div>
+      </div>
+
+      <div class="messages-grid" id="messagesGrid"></div>
+    </div>
+
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/analytics.js"></script>
+  <script>
+    // ─── Mensajes iniciales (curados por la fundación) ────
+    const mensajesBase = [
+      { texto: 'Tú puedes. Yo ya pude. Y muchas más vienen detrás.', autor: 'María, sobreviviente' },
+      { texto: 'En los días grises también florecen flores.', autor: 'Carmen' },
+      { texto: 'No estás sola. Aquí hay una hermana sosteniéndote.', autor: 'Lucía' },
+      { texto: 'Llorar también es un acto de valentía.', autor: 'Anónima' },
+      { texto: 'Mi pelo volvió. Mi alegría también. La tuya volverá.', autor: 'Patricia' },
+      { texto: 'Hoy basta con respirar. Mañana volverás a brillar.', autor: 'Sofía' },
+      { texto: 'Eres más que tu diagnóstico. Mucho, mucho más.', autor: 'Ana' },
+      { texto: 'A veces ganar es solo levantarse. Y eso ya es heroico.', autor: 'Una guerrera más' },
+      { texto: 'Tu cuerpo te está protegiendo. Sé suave con él.', autor: 'Marcela' },
+      { texto: 'La quimio termina. Tú no. Tú sigues.', autor: 'Diana' },
+      { texto: 'Pide ayuda. No es debilidad, es sabiduría.', autor: 'Anónima' },
+      { texto: 'Hoy te abrazo desde donde estés.', autor: 'Catalina' },
+    ];
+
+    // ─── Colores y rotaciones para post-its ────────────────
+    const colors = [
+      '#FEF4A8', '#FFE0D0', '#E8DECE', '#F4D8E8',
+      '#D8DCC4', '#E8CFC4', '#FAF4EA', '#DDD0BC',
+    ];
+
+    function randomBetween(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    function renderMuro() {
+      const grid = document.getElementById('messagesGrid');
+      const propios = Storage.get('muro-mensajes', []);
+      const todos = [...propios, ...mensajesBase];
+
+      grid.innerHTML = todos.map((m, i) => {
+        const color = colors[i % colors.length];
+        const rotation = randomBetween(-3, 3).toFixed(1);
+        return `
+          <div class="postit" style="background: ${color}; transform: rotate(${rotation}deg);">
+            <div>"${escapeHtml(m.texto)}"</div>
+            <div class="author">— ${escapeHtml(m.autor)}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ─── Add message form ──────────────────────────────────
+    const msgInput = document.getElementById('msgInput');
+    const nameInput = document.getElementById('nameInput');
+    const addBtn = document.getElementById('addBtn');
+    const charCount = document.getElementById('charCount');
+
+    function updateState() {
+      charCount.textContent = msgInput.value.length;
+      addBtn.disabled = !msgInput.value.trim() || !nameInput.value.trim();
+    }
+
+    msgInput.addEventListener('input', updateState);
+    nameInput.addEventListener('input', updateState);
+
+    addBtn.addEventListener('click', () => {
+      const texto = msgInput.value.trim();
+      const autor = nameInput.value.trim();
+      if (!texto || !autor) return;
+
+      const propios = Storage.get('muro-mensajes', []);
+      propios.unshift({ texto, autor, fecha: Date.now() });
+      Storage.set('muro-mensajes', propios.slice(0, 20));  // limit
+
+      msgInput.value = '';
+      nameInput.value = '';
+      updateState();
+      renderMuro();
+    });
+
+    renderMuro();
+  </script>
+</body>
+</html>

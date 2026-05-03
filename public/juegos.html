@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F2EBE0">
+  <title>Juegos · Terapia Rosa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Italiana&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div class="app">
+    <header class="page-header">
+      <a href="mi-espacio.html" class="back-btn" aria-label="Volver">←</a>
+      <div>
+        <div class="page-eyebrow">Sin presión</div>
+        <div class="page-title">Juegos</div>
+      </div>
+    </header>
+
+    <div class="combo-eyebrow">Juegos</div>
+    <div class="combo-title"><em>Distrae la mente</em></div>
+    <div class="combo-subtitle">No estás sola. Cuando las horas se hacen largas, juega un ratito. <em>Sin puntajes, sin presión, sin perder.</em></div>
+
+    <div class="featured-card" id="streakCard" style="margin-top: 14px; background: rgba(168, 174, 147, 0.16); border-color: rgba(168, 174, 147, 0.5);">
+      <div class="featured-thumb" style="background: linear-gradient(135deg, var(--verde-alma), var(--verde-oscuro));">
+        <div class="play-icon" style="font-size:18px;">✿</div>
+      </div>
+      <div class="featured-meta">
+        <div class="featured-tag" style="color: var(--verde-oscuro);">Tu camino</div>
+        <div class="featured-title" id="streakTitle">Llevas 1 día viviendo</div>
+        <div class="featured-sub"><em>Eso es constancia, mi reina.</em></div>
+      </div>
+    </div>
+
+    <div class="list-section-title">
+      <span><em>elige uno</em></span>
+      <span class="right-label">Sin presión</span>
+    </div>
+
+    <div class="cards-grid" style="padding: 0 22px;">
+      <a href="sopa.html" class="nav-card" style="background: #DDD0BC;">
+        <div class="icon-wrap" style="background: rgba(255,255,255,0.5);">🔤</div>
+        <div>
+          <div class="title">Sopa de letras</div>
+          <div class="sub">palabras que abrazan</div>
+          <div style="margin-top:6px; font-size:11px; color: var(--texto-suave);">⏱ 10 min</div>
+        </div>
+      </a>
+      <a href="memoria.html" class="nav-card" style="background: #E8CFC4;">
+        <div class="icon-wrap" style="background: rgba(255,255,255,0.5);">🧠</div>
+        <div>
+          <div class="title">Memoria</div>
+          <div class="sub">parejas suaves</div>
+          <div style="margin-top:6px; font-size:11px; color: var(--texto-suave);">⏱ 5 min</div>
+        </div>
+      </a>
+      <a href="acertijos.html" class="nav-card" style="background: #D8DCC4; grid-column: 1 / -1;">
+        <div class="icon-wrap" style="background: rgba(255,255,255,0.5);">💭</div>
+        <div>
+          <div class="title">Acertijos del alma</div>
+          <div class="sub">adivinanzas dulces, sin trampas</div>
+          <div style="margin-top:6px; font-size:11px; color: var(--texto-suave);">⏱ 8 min</div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+  <script>
+    (function () {
+      const KEY = 'terapia-first-visit';
+      let first = localStorage.getItem(KEY);
+      if (!first) {
+        first = new Date().toISOString();
+        localStorage.setItem(KEY, first);
+      }
+      const start = new Date(first);
+      const now = new Date();
+      const days = Math.max(1, Math.floor((now - start) / (1000 * 60 * 60 * 24)) + 1);
+      const el = document.getElementById('streakTitle');
+      if (el) el.textContent = `Llevas ${days} ${days === 1 ? 'día' : 'días'} viviendo`;
+    })();
+  </script>
+  <script src="js/utils.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/analytics.js"></script>
+</body>
+</html>
