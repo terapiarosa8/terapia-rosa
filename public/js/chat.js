@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════
-// CHAT — Alma como navegadora inteligente del sitio
-// Entiende lo que siente la paciente y recomienda recursos
-// En producción: llama a /.netlify/functions/chat (IA real)
+// CHAT — Alma como navegadora del sitio (modo demo)
+// Reconoce 30+ palabras clave y recomienda recursos del sitio.
+// No usa IA externa — todas las respuestas están en respuestasDemo.
 // ═══════════════════════════════════════════════════════════════
 
 const RECURSOS = {
@@ -175,7 +175,7 @@ function findResponse(text) {
     if (lower.includes(key)) return respuestasDemo[key];
   }
   return {
-    texto: 'Cuéntame un poquito más, para encontrarte el mejor recurso 🌸\n\nPuedes decirme cosas como: "estoy ansiosa", "necesito distraerme", "no puedo dormir", "quiero llorar", "estoy aburrida", "tengo miedo"...\n\n(Cuando publiquemos el sitio, voy a entender mucho más con IA real.)',
+    texto: 'Cuéntame un poquito más, para encontrarte el mejor recurso 🌸\n\nPuedes decirme cosas como: "estoy ansiosa", "necesito distraerme", "no puedo dormir", "quiero llorar", "estoy aburrida", "tengo miedo"...',
     recursos: []
   };
 }
@@ -249,98 +249,6 @@ function hideTyping() {
   if (t) t.remove();
 }
 
-// ─── Historial de conversación (para enviar a la API) ────────────
-const chatHistory = [];
-const MAX_HISTORY_MESSAGES = 20; // limitar contexto para no agotar tokens
-
-// ─── Detectar si la API real está disponible ──────────────────────
-// En producción (Netlify) o desarrollo con `netlify dev`: usar API real
-// En file:// (abrir HTML directamente): usar respuestas demo
-function isApiAvailable() {
-  const proto = window.location.protocol;
-  return proto === 'http:' || proto === 'https:';
-}
-
-// ─── Detectar palabras clave para mostrar recursos ────────────────
-// Aunque la respuesta venga de la IA, seguimos detectando keywords
-// del mensaje del usuario para ofrecer botones de navegación a recursos
-function detectarRecursos(textoUsuario) {
-  const lower = textoUsuario.toLowerCase().trim();
-  const keys = Object.keys(respuestasDemo).sort((a, b) => b.length - a.length);
-  for (const key of keys) {
-    if (lower.includes(key)) {
-      return respuestasDemo[key].recursos || [];
-    }
-  }
-  return [];
-}
-
-// ─── Enviar mensaje a la IA real (Gemini vía Netlify Function) ───
-async function sendApiMessage(text) {
-  addChatMessage('user', text);
-  showTyping();
-
-  // Agregar al historial
-  chatHistory.push({ role: 'user', content: text });
-  // Recortar historial si supera el máximo
-  while (chatHistory.length > MAX_HISTORY_MESSAGES) {
-    chatHistory.shift();
-  }
-
-  // Timeout de 30 segundos para no dejar a la usuaria esperando indefinido
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: chatHistory }),
-      signal: controller.signal
-    });
-
-    clearTimeout(timeoutId);
-    hideTyping();
-
-    if (!response.ok) {
-      if (response.status === 404 || response.status === 501 || response.status === 405) {
-        chatHistory.pop();
-        sendDemoMessage(text, true);
-        return;
-      }
-      let errMsg = 'Algo no salió bien. Intenta de nuevo en un momento 🌸';
-      try {
-        const data = await response.json();
-        if (data.error) errMsg = data.error;
-      } catch {}
-      addChatMessage('alma', errMsg);
-      chatHistory.pop();
-      return;
-    }
-
-    const data = await response.json();
-    const respuestaIA = data.message || 'Estoy aquí contigo 🌸';
-
-    // Guardar respuesta de Alma en el historial
-    chatHistory.push({ role: 'assistant', content: respuestaIA });
-
-    addChatMessage('alma', respuestaIA);
-
-    // Mostrar recursos si el mensaje del usuario contiene keywords conocidas
-    const recursos = detectarRecursos(text);
-    if (recursos.length > 0) {
-      setTimeout(() => addRecommendations(recursos), 250);
-    }
-  } catch (err) {
-    clearTimeout(timeoutId);
-    hideTyping();
-    // No exponer detalles del error en consola del cliente
-    // Fallback a demo si falla la red o timeout
-    chatHistory.pop();
-    sendDemoMessage(text, true);
-  }
-}
-
 function sendDemoMessage(text, skipUserMessage = false) {
   if (!skipUserMessage) addChatMessage('user', text);
   if (!skipUserMessage) showTyping();
@@ -358,20 +266,12 @@ function sendUserMessage() {
   const text = inputText.value.trim();
   if (!text) return;
   inputText.value = '';
-  // Si estamos en HTTP/HTTPS (servidor), llamar a la IA real
-  // Si estamos en file:// (abrir HTML local), usar demo
-  if (isApiAvailable()) {
-    sendApiMessage(text);
-  } else {
-    sendDemoMessage(text);
-  }
+  sendDemoMessage(text);
 }
 
 // ─── Limpiar conversación (privacidad en dispositivos compartidos) ────
 function clearChatConversation() {
   if (!confirm('¿Borrar esta conversación? No quedará rastro en este dispositivo.')) return;
-  // Limpiar también el historial enviado a la API
-  chatHistory.length = 0;
   messagesArea.innerHTML = `
     <div class="message alma">
       Hola 🌸 Soy Alma. Cuéntame cómo te sientes o qué necesitas, y te ayudo a encontrar lo que mejor te pueda servir aquí mismo.
