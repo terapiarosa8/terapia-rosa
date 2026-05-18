@@ -34,10 +34,10 @@
       display: block;
     }
   </style>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Terapia Rosa">
@@ -75,7 +75,6 @@
     const videos = {
       yoga: [
         { videoId: '20W-fPS0O2o', title: 'Yoga para pacientes en tratamiento oncológico', author: 'Brenda Medina', duration: 22, tag: 'Suave' },
-        { videoId: '734879097', title: 'Conceptos básicos', author: 'Ana Isabel · Yogalama', duration: 53, tag: 'Principiante' },
         { videoId: 'v7AYKMP6rOE', title: 'Yoga restaurativo en cama', author: 'Lucía · Medellín', duration: 20, tag: 'Muy suave' },
         { videoId: 'ZzgXfXkbCSU', title: 'Saludo a tu cuerpo', author: 'Marisol · Cali', duration: 10, tag: 'Suave' },
         { videoId: 'jMWzYqkfCZA', title: 'Estiramientos para días de fatiga', author: 'Carolina · Bogotá', duration: 12, tag: 'Muy suave' },
@@ -87,25 +86,6 @@
         { videoId: '1ZYbU82GVz4', title: 'Meditación para dormir', author: 'Marisol · Cali', duration: 10, tag: 'Para dormir' },
       ],
     };
-
-    // ─── Detección automática YouTube vs Vimeo ───────────────
-    // Si el videoId es solo dígitos → Vimeo. Si tiene letras → YouTube.
-    function detectarFuente(v) {
-      if (v.source) return v.source;
-      return /^\d+$/.test(v.videoId) ? 'vimeo' : 'youtube';
-    }
-
-    function thumbUrl(v) {
-      return detectarFuente(v) === 'vimeo'
-        ? ⁠ https://vumbnail.com/${v.videoId}.jpg ⁠
-        : ⁠ https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg ⁠;
-    }
-
-    function embedUrl(v) {
-      return detectarFuente(v) === 'vimeo'
-        ? ⁠ https://player.vimeo.com/video/${encodeURIComponent(v.videoId)}?autoplay=1&title=0&byline=0&portrait=0 ⁠
-        : ⁠ https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.videoId)}?autoplay=1&rel=0 ⁠;
-    }
 
     let currentTab = 'yoga';
     const tabsRow = document.getElementById('tabsRow');
@@ -133,11 +113,11 @@
       });
     }
 
-    function playVideo(v) {
+    function playVideo(videoId) {
       videoFrame.innerHTML = `
         <div class="video-thumb-wrap">
-          <iframe src="${embedUrl(v)}"
-                  title="${escapeHtml(v.title)}"
+          <iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0"
+                  title="Video"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowfullscreen></iframe>
         </div>
@@ -153,10 +133,10 @@
       featuredArea.innerHTML = `
         <div class="featured-card" id="featuredCard">
           <div class="featured-thumb" style="overflow:hidden;">
-            <img src="${thumbUrl(featured)}"
+            <img src="https://i.ytimg.com/vi/${featured.videoId}/hqdefault.jpg"
                  alt="${escapeHtml(featured.title)}"
                  style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.7;">
-            <div class="play-icon" style="position:relative; z-index:2;">▶️</div>
+            <div class="play-icon" style="position:relative; z-index:2;">▶</div>
             <div class="featured-duration">${featured.duration} min</div>
           </div>
           <div class="featured-meta">
@@ -166,14 +146,14 @@
           </div>
         </div>
       `;
-      document.getElementById('featuredCard').addEventListener('click', () => playVideo(featured));
+      document.getElementById('featuredCard').addEventListener('click', () => playVideo(featured.videoId));
     }
 
     function renderList() {
       const list = videos[currentTab].slice(1);
       videoList.innerHTML = list.map((v, i) => `
-        <div class="h-item" data-idx="${i}">
-          <div class="h-item-thumb green">▶️</div>
+        <div class="h-item" data-video="${v.videoId}">
+          <div class="h-item-thumb green">▶</div>
           <div class="h-item-meta">
             <div class="h-item-title">${escapeHtml(v.title)}</div>
             <div class="h-item-sub">${escapeHtml(v.author)} · ${escapeHtml(v.tag)}</div>
@@ -182,8 +162,7 @@
         </div>
       `).join('');
       videoList.querySelectorAll('.h-item').forEach(el => {
-        const v = list[parseInt(el.dataset.idx, 10)];
-        el.addEventListener('click', () => playVideo(v));
+        el.addEventListener('click', () => playVideo(el.dataset.video));
       });
     }
 
