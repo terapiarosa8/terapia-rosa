@@ -18,7 +18,7 @@ const topics = [
     id: 'nutricion', icon: '🥗', title: 'Nutrición consciente',
     videos: [
       // Video 1 (sale como "Recomendado hoy" — el destacado)
-      { videoId: 'REEMPLAZAR_AQUI', title: 'Título del video 1', author: 'Autor · Ciudad', duration: 10, tag: 'Suave' },
+      { videoId: 'uF23xVEy2k8', title: 'Aprende con Pilar Restrepo - médica funcional', author: 'Pilar Restrepo · Medellin', duration: 17, tag: 'Alimentación' },
 
       // Video 2
       { videoId: 'REEMPLAZAR_AQUI', title: 'Título del video 2', author: 'Autor · Ciudad', duration: 8, tag: 'Práctico' },
