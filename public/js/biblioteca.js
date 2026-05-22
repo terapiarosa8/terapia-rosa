@@ -36,7 +36,7 @@ const topics = [
     id: 'mental', icon: '💛', title: 'Salud mental',
     videos: [
       // Video 1 (sale como "Recomendado hoy" — el destacado)
-      { videoId: 'REEMPLAZAR_AQUI', title: 'Título del video 1', author: 'Autor · Ciudad', duration: 15, tag: 'Tranquilo' },
+      { videoId: 'qEibAo5AF_0', title: 'Aprende con Pablo Gómez - Psiquiatra', author: 'Pablo Gómez · Medellin', duration: 30, tag: 'Salud Mental' },
 
       // Video 2
       { videoId: 'REEMPLAZAR_AQUI', title: 'Título del video 2', author: 'Autor · Ciudad', duration: 10, tag: 'Reflexivo' },
