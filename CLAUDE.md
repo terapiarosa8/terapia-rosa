@@ -66,21 +66,32 @@ terapia-rosa/
 
 ---
 
-## Paleta de colores — NUNCA cambies estos valores
+## Paleta de colores — Identidad Alma Rosa (NUNCA cambies estos valores sin pedir permiso)
+
+Alineada al **Manual de Marca de la Fundación Alma Rosa**: Rosa claro **Pantone 708C** + Rosa fuerte **Pantone 191C**. Toda la paleta se define una sola vez en `:root` de `public/styles/main.css` y se propaga a las 13 páginas vía variables CSS.
 
 ```css
---rosa-base:     #E0C4B6   /* fondo de tarjetas suaves */
---rosa-medio:    #D4AFA0   /* hover, elementos secundarios */
---rosa-fuerte:   #C9968A   /* botones primarios, cards activas */
---rosa-profundo: #8B5E4C   /* texto de acento, botones CTA */
---verde-alma:    #A8AE93   /* sage — badges, estado "ok", pétalos en "sostén" */
---verde-oscuro:  #878D75   /* texto sobre verde */
---crema:         #F2EBE0   /* fondo global */
---crema-profunda:#E8DECE   /* variante crema */
---papel:         #FAF4EA   /* fondo de cards y áreas de escritura */
---texto-oscuro:  #2E2420   /* texto principal */
---texto-suave:   #7A6357   /* texto secundario, labels */
+--rosa-base:     #FAD9DE   /* fondo de tarjetas suaves (rosa muy claro) */
+--rosa-medio:    #F2A0AE   /* hover, elementos secundarios */
+--rosa-fuerte:   #E95178   /* botones primarios, cards activas, marca — Pantone 191C */
+--rosa-profundo: #C0335B   /* texto de acento, botones CTA, contraste AA */
+--verde-alma:    #D84E7A   /* (nombre histórico) rosa berry — estado "éxito/encontrado/correcto" */
+--verde-oscuro:  #A82C54   /* (nombre histórico) rosa profundo — texto sobre estado de éxito */
+--crema:         #FDF2F4   /* fondo global (blanco rosado) */
+--crema-profunda:#FBE6EA   /* variante crema */
+--papel:         #FFFFFF   /* fondo de cards y áreas de escritura (blanco limpio) */
+--texto-oscuro:  #2E2328   /* texto principal */
+--texto-suave:   #83646C   /* texto secundario, labels (≥4.5:1 AA) */
 ```
+
+> **Nota:** las variables `--verde-alma` / `--verde-oscuro` conservan su nombre por compatibilidad, pero ya **no son verdes**: el Manual de Alma Rosa es solo rosa + grises, así que el estado semántico de "éxito" (palabra encontrada, pareja, respuesta correcta) usa un rosa berry profundo.
+
+### Logo y marca (Alma Rosa)
+- `public/isotipo-almarosa.png` — isotipo (flor) a color, va en el header del home junto a "TERAPIA rosa".
+- `public/isotipo-almarosa-blanco.png` — isotipo blanco, para fondos de color.
+- `public/logo-almarosa.png` — logo completo (flor + "AlmaRosa"), va como crédito "Un espacio de la Fundación" al pie del home.
+- `favicon-32.png`, `apple-touch-icon.png`, `icon-192/512/1024.png` — flor blanca sobre fondo rosa #E95178 (uso "sobre fondo de color" aprobado en el manual).
+- Fuentes originales del manual en la carpeta `KV ALMAROSA/` (Poppins + Catalish Huntera). El sitio **conserva** sus tipografías actuales (Cormorant Garamond / Italiana / Jost) por decisión de diseño.
 
 ---
 
