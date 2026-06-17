@@ -1,8 +1,221 @@
-# 🌸 Guía para administrar Terapia Rosa
+# 🌸 Guía completa de Terapia Rosa
+_Manual para la Fundación Alma Rosa: qué es, cómo se creó y cómo administrarla._
 
-Esta guía te explica cómo cambiar el contenido del sitio **sin saber programar**. Todo se hace desde GitHub en el navegador, sin instalar nada.
+Esta guía reúne **todo sobre la aplicación Terapia Rosa**: qué es, cómo se creó, cómo funciona y cómo **administrarla** (cambiar su contenido) **sin saber programar**. Todo se hace desde GitHub en el navegador, sin instalar nada.
 
 > 🌐 **Dónde vive el sitio:** se publica con **GitHub Pages** y está en vivo en **https://terapiarosa8.github.io/terapia-rosa/**. Cada vez que guardas un cambio en la rama `main`, GitHub lo publica solo (automáticamente, con "GitHub Actions"). *(Las secciones 8, 9 y 11 hablan de una función de IA en Netlify que **hoy no está activa**; aplican solo si en el futuro se conecta la IA real de Alma — ver la sección 7.)*
+
+---
+
+## Qué es Terapia Rosa y para quién
+
+**Terapia Rosa** es un micrositio web (un sitio pequeño, de pocas pantallas) de **acompañamiento durante la quimioterapia**. Es un espacio de la **Fundación Alma Rosa**, pensado para estar al lado de las mujeres en los momentos más largos del tratamiento.
+
+**¿Para quién es?** Para mujeres que están en una **sesión de quimioterapia de 3 a 6 horas**, con el **celular en la mano**, muchas veces cansadas, con náuseas o con miedo. Por eso todo está diseñado para usarse sin esfuerzo: textos suaves, botones grandes y nada que distraiga o complique.
+
+La pantalla de inicio (`public/index.html`) recibe con un **saludo según la hora del día**, una **frase del día** y la pregunta cálida *"¿Qué necesitas ahora?"*, seguida de seis tarjetas grandes para elegir con calma: **Habla con Alma** (una amiga que escucha), **Aprende**, **Yoga & medita**, **Respira**, **Colorear** y **Mi espacio** (diario, juegos, muro).
+
+Su **filosofía** se resume en cuatro ideas:
+
+1. **Suave y sin fricción** — todo es amable, lento y fácil de tocar.
+2. **Anónima** — **sin login ni cuentas**; nadie tiene que registrarse ni dar datos.
+3. **Privada** — lo que la persona escribe en el diario o en el muro se queda **solo en su propio celular** (en el almacenamiento del navegador), no se sube a ningún servidor.
+4. **Pensada para celular** — diseño *mobile-first* (primero el teléfono), con un menú fijo abajo siempre visible.
+
+Al pie de la página de inicio aparece la firma *"Un espacio de la Fundación Alma Rosa"* con su logo, porque más que una app, es un gesto de compañía de la fundación para que ninguna mujer sienta que atraviesa la quimioterapia sola.
+
+---
+
+## Cómo está hecha (cómo se creó)
+
+Terapia Rosa se construyó con tres tecnologías básicas de la web, sin programas complicados de por medio:
+
+- **HTML** — es el "esqueleto" de cada página: define qué textos, botones e imágenes aparecen.
+- **CSS** — es el "vestido": define los colores, las letras y cómo se ve todo.
+- **JavaScript** — es lo que hace que las cosas "respondan": que la flor de respiración se mueva, que los juegos funcionen, que el chat con Alma conteste.
+
+Lo importante es que se usaron en su forma **"pura" o "vanilla"**, es decir, **sin frameworks como React, Vue ni similares**. Esto fue una decisión a propósito, y la razón está escrita en el propio proyecto:
+
+> "**Por qué vanilla:** La fundación necesita poder mantener el sitio sin programadores. HTML+CSS+JS puro es lo más mantenible."
+
+En palabras simples: un *framework* es una "caja de herramientas extra" que muchos sitios usan, pero que obliga a instalar programas, ejecutar pasos de compilación y aprender cosas técnicas. Al **no** usarlos, el sitio se mantiene sencillo y cualquier persona con conocimientos básicos puede abrir un archivo y hacer un cambio pequeño. La regla del proyecto incluso dice que **no se usan dependencias externas instaladas** en la parte visible: si se necesita una librería, se carga desde internet (CDN) o no se usa.
+
+### Cada página es un archivo .html independiente
+
+El sitio **no es una sola página gigante**, sino **13 páginas separadas**, y cada una vive en su propio archivo `.html`. Esto hace que tocar una página no afecte a las demás. Las páginas son:
+
+| Archivo | Para qué sirve |
+|---|---|
+| `index.html` | Inicio: saludo, frase del día y las tarjetas principales |
+| `chat.html` | Chat con **Alma**, que orienta a la paciente |
+| `respiracion.html` | Flor animada para respirar + música suave |
+| `mi-espacio.html` | Menú con las 6 secciones de "Mi espacio" |
+| `colorear.html` | Mandalas para colorear |
+| `bienestar.html` | Videos de yoga y meditación |
+| `diario.html` | Diario privado |
+| `muro.html` | Muro de mensajes (post-its) |
+| `juegos.html` | Menú de los 3 juegos |
+| `sopa.html` | Sopa de palabras |
+| `memoria.html` | Juego de memoria |
+| `acertijos.html` | Acertijos del alma |
+| `biblioteca.html` | Biblioteca con 3 temas |
+
+### El diseño vive en un solo lugar
+
+Los colores, las letras y la apariencia de **todas** las páginas se definen **una sola vez** en el archivo:
+
+```
+public/styles/main.css
+```
+
+Ahí, en una sección llamada `:root`, están guardados los colores de la marca como "variables" (apodos reutilizables). Estos son los valores **reales** de la paleta Alma Rosa que están hoy en el archivo:
+
+```css
+:root {
+  --rosa-base: #FAD9DE;
+  --rosa-medio: #F2A0AE;
+  --rosa-fuerte: #E95178;
+  --rosa-profundo: #C0335B;
+  --verde-alma: #D84E7A;
+  --verde-oscuro: #A82C54;
+  --crema: #FDF2F4;
+  --crema-profunda: #FBE6EA;
+  --papel: #FFFFFF;
+  --texto-oscuro: #2E2328;
+  --texto-suave: #83646C;
+}
+```
+
+La gran ventaja: si algún día se quiere ajustar un color, **se cambia una sola vez aquí** y el cambio se ve automáticamente en las 13 páginas. (Un detalle curioso: las variables `--verde-alma` y `--verde-oscuro` conservan ese nombre por historia, pero hoy **ya no son verdes** — son tonos de rosa que marcan "acierto" o "éxito" en los juegos.)
+
+### Las tipografías (letras)
+
+El sitio usa tres tipos de letra, que se cargan gratis desde **Google Fonts** y se definen también en `main.css`:
+
+- **Cormorant Garamond** (`--serif`) — para los textos largos, frases y títulos emotivos.
+- **Italiana** (`--display`) — para la marca "TERAPIA rosa".
+- **Jost** (`--sans`) — para la parte funcional: botones, menús y etiquetas.
+
+La regla de estilo es sencilla: **todo lo emotivo va en letra serif en cursiva; todo lo funcional va en Jost.**
+
+### Cómo están organizadas las carpetas
+
+Todo lo que ve la paciente vive dentro de una carpeta llamada **`public/`**, organizada así:
+
+- **`public/`** → los **archivos `.html`** (las páginas) y las imágenes del logo de la Fundación (por ejemplo `isotipo-almarosa.png`, `logo-almarosa.png`).
+- **`public/styles/`** → contiene **`main.css`**, el único archivo de diseño.
+- **`public/js/`** → la **lógica** (el JavaScript) repartida en archivos por tema:
+  - `utils.js` — ayudas compartidas, como las **frases del día**.
+  - `chat.js` — el cerebro de **Alma** (qué entiende y a qué recurso lleva).
+  - `respiracion.js` — la flor animada y la música.
+  - `sopa.js`, `memoria.js`, `acertijos.js` — los tres juegos.
+  - `biblioteca.js` — los temas de la biblioteca y la lectura en voz alta.
+
+En resumen: una **idea por archivo**. Si se quiere cambiar una frase, se busca `utils.js`; si se quiere ajustar un color, se busca `main.css`; si se quiere editar una página, se abre su `.html`. Esa simplicidad es justamente lo que permite que la Fundación pueda cuidar el sitio sin depender de un programador.
+
+---
+
+## Recorrido por las pantallas
+
+Así está organizado el sitio, pantalla por pantalla. Cada una es un archivo independiente dentro de la carpeta `public/`, así que cualquiera de ustedes puede entender qué hace sin necesidad de saber programar.
+
+- **Inicio** (`index.html`) — La pantalla de bienvenida. Muestra un saludo según la hora del día, la **Frase del día** y un grupo de tarjetas grandes ("Qué necesitas ahora?") que llevan a: Habla con Alma, Aprende, Yoga & medita, Respira, Colorear y Mi espacio. Abajo aparece el crédito de la **Fundación Alma Rosa**.
+
+- **Alma / Chat** (`chat.html`) — La conversación con **Alma**, una acompañante que escucha y, sobre todo, orienta. La paciente escribe cómo se siente (o toca botones rápidos como *"Tengo náuseas"*, *"Tengo miedo"*, *"No puedo dormir"*, *"Estoy ansiosa"*) y Alma le responde con calma y le sugiere el recurso del sitio que mejor le sirve en ese momento. Tiene un botón de escoba (🧹) para borrar la conversación por privacidad.
+
+- **Respira** (`respiracion.html`) — Una **flor animada** (una esfera con pétalos translúcidos) que guía la respiración: inhalar, sostener y exhalar. Incluye un interruptor **"🎵 Música suave"** que la paciente puede apagar cuando quiera. Es la pausa de 5 minutos para serenarse.
+
+- **Mi espacio** (`mi-espacio.html`) — El centro personal de la paciente. Es un menú con seis accesos: **Diario**, **Juegos suaves**, **Colorear**, **Muro de guerreras**, **Biblioteca** y **Yoga & medita**.
+
+- **Colorear** (`colorear.html`) — Un lienzo para pintar sin pensar. Ofrece cuatro diseños: **Mandala, Flor, Mariposa y Corazón**, que se colorean tocando las distintas zonas con una paleta de colores suaves.
+
+- **Yoga & medita** (en el sitio aparece como Yoga & medita / *"Mueve poquito, siente mucho"*) (`bienestar.html`) — Videos de YouTube organizados en dos pestañas: **Yoga suave** y **Meditaciones** (por ejemplo *"Yoga para pacientes en tratamiento oncológico"* y *"Meditación guiada para mujeres con cáncer de mama"*). Sin presión, a su propio ritmo.
+
+- **Diario** (`diario.html`) — Un cuaderno privado para escribir lo que se siente ese día. Todo se guarda **solo en el celular de la paciente** (no se sube a internet), de modo que es completamente privado.
+
+- **Muro de guerreras** (`muro.html`) — Un muro de mensajes anónimos entre mujeres que viven el mismo camino. Se pueden leer mensajes y dejar uno propio. *"No estás sola."*
+
+- **Juegos** (`juegos.html`) — El menú de los tres juegos suaves, *sin puntajes, sin presión, sin perder*. Muestra un mensaje cariñoso de constancia ("Llevas X días viviendo") y lleva a los tres juegos:
+  - **Sopa de palabras** (`sopa.html`) — Buscar palabras que abrazan, tocando o arrastrando con el dedo. *Sin presión, a tu ritmo.*
+  - **Memoria** (`memoria.html`, "Encuentra las parejas") — El clásico juego de encontrar parejas con cartas suaves.
+  - **Acertijos del alma** (`acertijos.html`) — Adivinanzas dulces y sin trampas, *para descansar la mente*.
+
+- **Biblioteca / Aprende** (`biblioteca.html`) — Contenido para aprender a su propio ritmo, *"sin tecnicismos, sin alarma"*. Está organizado en tres temas: **Nutrición consciente** (🥗), **Salud mental** (💛) y **Autocuidado** (🌿), cada uno con videos cortos y cercanos. (Nota: algunos videos todavía dicen `REEMPLAZAR_AQUI`, es decir, falta colocar el video real de la fundación.)
+
+### La barra de navegación inferior (siempre visible)
+
+En la parte de abajo de la pantalla hay una **barra fija** que acompaña a la paciente en todo momento, para que nunca se pierda. La genera automáticamente el archivo `js/nav.js` y tiene **cinco botones**:
+
+1. **🏠 Inicio** → lleva a la pantalla de bienvenida (`index.html`)
+2. **📚 Aprende** → lleva a la Biblioteca (`biblioteca.html`)
+3. **💬 Alma** → lleva al chat con Alma (`chat.html`)
+4. **🧘 Yoga** → lleva a Yoga & medita (`bienestar.html`)
+5. **📖 Mi espacio** → lleva al centro personal (`mi-espacio.html`)
+
+El botón en el que la paciente se encuentra aparece **resaltado** para que sepa siempre dónde está. Cuando entra a una pantalla "hija" (por ejemplo Diario, Muro, Juegos o Colorear), la barra resalta **Mi espacio**, porque esas pantallas viven dentro de ese apartado. En la pantalla de **Respira** no se resalta ningún botón, para no distraer durante el ejercicio.
+
+---
+
+## La marca Alma Rosa en la app
+
+La identidad visual de la Fundación está integrada en toda la aplicación: los colores, las tipografías (los tipos de letra) y los logos. Esta sección explica de dónde sale cada cosa, para qué sirve y qué conviene **no** tocar para que la app siga viéndose como Alma Rosa.
+
+### Los colores oficiales
+
+La Fundación tiene dos colores de marca, definidos con el sistema **Pantone** (un estándar internacional que asegura que un color se vea igual en pantalla y en imprenta):
+
+- **Rosa claro — Pantone 708C**: el rosa suave, para fondos y elementos delicados.
+- **Rosa fuerte — Pantone 191C**: el rosa intenso, para botones, acentos y textos destacados.
+
+En la web, los colores no se escriben con nombres Pantone sino con un código llamado **HEX** (un código de 6 caracteres que empieza con `#`, por ejemplo `#E95178`). Todos los colores de la app están reunidos en un solo lugar: la parte superior del archivo `public/styles/main.css`, dentro de un bloque llamado `:root`. Estos son los valores reales que usa la app hoy:
+
+```css
+:root {
+  --rosa-base: #FAD9DE;       /* rosa claro — fondos suaves */
+  --rosa-medio: #F2A0AE;      /* rosa medio — hover, elementos secundarios */
+  --rosa-fuerte: #E95178;     /* rosa fuerte — botones primarios */
+  --rosa-profundo: #C0335B;   /* rosa profundo — acentos y CTA */
+  --verde-alma: #D84E7A;      /* tono de acento */
+  --verde-oscuro: #A82C54;    /* texto sobre acento */
+  --crema: #FDF2F4;           /* fondo global */
+  --crema-profunda: #FBE6EA;  /* variante de fondo */
+  --papel: #FFFFFF;           /* fondo de tarjetas y áreas de escritura */
+  --texto-oscuro: #2E2328;    /* texto principal */
+  --texto-suave: #83646C;     /* texto secundario, etiquetas */
+}
+```
+
+**Cómo funciona esto en la práctica:** cada nombre que empieza con `--` (por ejemplo `--rosa-fuerte`) es una **variable de color**, es decir, una especie de "etiqueta" guardada en un solo lugar. Todas las páginas de la app (`index.html`, `chat.html`, `respiracion.html`, etc.) usan esas etiquetas en vez de repetir el código del color. La gran ventaja: si algún día se quisiera ajustar un tono, **se cambia una sola línea en `public/styles/main.css` y el cambio se aplica a toda la app de golpe**, sin tener que editar página por página.
+
+### Las tipografías (tipos de letra)
+
+La app usa tres tipografías gratuitas de Google Fonts, también declaradas en el bloque `:root` de `public/styles/main.css` y cargadas en cada página HTML:
+
+- **`Cormorant Garamond`** (variable `--serif`): es la letra elegante con remates. Se usa para lo **emotivo** — frases, textos largos y títulos de sección, generalmente en *cursiva*.
+- **`Italiana`** (variable `--display`): es la letra de la **marca**, la que escribe el nombre "TERAPIA rosa" en el encabezado.
+- **`Jost`** (variable `--sans`): es la letra limpia y sin remates para lo **funcional** — botones, etiquetas, navegación y textos de interfaz.
+
+La regla de la marca es simple: **todo lo emotivo va en la letra serif en cursiva; todo lo funcional va en la letra sans**.
+
+### Para qué sirve cada archivo de logo
+
+En la carpeta `public/` están todos los archivos de imagen de la marca. Comprobé que **los ocho existen**. Cada uno cumple una función distinta:
+
+1. **`isotipo-almarosa.png`** — el **isotipo** (el símbolo de la marca, sin el texto). Aparece en el **encabezado** de la pantalla de inicio, al lado del nombre "TERAPIA rosa" (referenciado en `index.html`).
+2. **`isotipo-almarosa-blanco.png`** — la **versión en blanco** del mismo isotipo, pensada para colocarse sobre fondos oscuros o de color, donde la versión normal no se vería bien.
+3. **`logo-almarosa.png`** — el **logo completo** de la Fundación (símbolo + nombre). Se muestra más abajo en la pantalla de inicio como **crédito y reconocimiento a la Fundación Alma Rosa** (referenciado en `index.html`).
+4. **`favicon-32.png`** — el **favicon**: el iconito pequeño que el navegador muestra en la pestaña y en los marcadores. Está enlazado en todas las páginas.
+5. **`apple-touch-icon.png`** — el ícono que usa el **iPhone/iPad** cuando alguien guarda la app en la pantalla de inicio del celular. También enlazado en todas las páginas.
+6. **`icon-192.png`** — ícono mediano para Android y para cuando se "instala" la app en el celular (definido en `manifest.json`).
+7. **`icon-512.png`** — ícono grande, en alta resolución, para la pantalla de inicio del celular y la pantalla de carga (definido en `manifest.json`).
+
+> Nota: también existe el archivo `icon-1024.png` en la carpeta (un ícono extra grande de respaldo), aunque las páginas no lo usan directamente. No hace falta borrarlo.
+
+En resumen: el **isotipo** va arriba en el encabezado, el **logo completo** va como crédito de la Fundación, y los **favicons e íconos** son las versiones pequeñas que ven el navegador y la pantalla de inicio del celular.
+
+### Recomendación importante
+
+**No cambien la paleta de colores ni las tipografías.** Estos tonos rosados (basados en los Pantone **708C** y **191C** de la Fundación) y los tipos de letra son la identidad de Alma Rosa. Mantenerlos hace que la app se sienta parte de la Fundación y transmita calma y cuidado. Si en algún momento se necesita un ajuste de color, debe hacerse **únicamente en el bloque `:root` de `public/styles/main.css`** y de común acuerdo con la Fundación, nunca cambiando colores sueltos en páginas individuales.
 
 ---
 
@@ -428,7 +641,16 @@ Si por accidente la clave queda expuesta:
 
 ---
 
-## 📱 Datos de contacto del proyecto
+## 📱 Datos clave y contactos
+
+**Datos técnicos del proyecto**
+
+- **Sitio en vivo:** https://terapiarosa8.github.io/terapia-rosa/
+- **Repositorio (código):** https://github.com/terapiarosa8/terapia-rosa
+- **Cómo se publica:** GitHub Pages (automático al guardar en la rama `main`)
+- **Cuenta de GitHub del proyecto:** terapiarosa8
+
+**Personas y apoyo**
 
 - **Coordinadora del proyecto:** Adriana (La Soberana SAS)
 - **Fundación:** Alma Rosa (https://fundacionalmarosa.org)
