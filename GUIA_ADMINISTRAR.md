@@ -2,13 +2,15 @@
 
 Esta guía te explica cómo cambiar el contenido del sitio **sin saber programar**. Todo se hace desde GitHub en el navegador, sin instalar nada.
 
+> 🌐 **Dónde vive el sitio:** se publica con **GitHub Pages** y está en vivo en **https://terapiarosa8.github.io/terapia-rosa/**. Cada vez que guardas un cambio en la rama `main`, GitHub lo publica solo (automáticamente, con "GitHub Actions"). *(Las secciones 8, 9 y 11 hablan de una función de IA en Netlify que **hoy no está activa**; aplican solo si en el futuro se conecta la IA real de Alma — ver la sección 7.)*
+
 ---
 
 ## ¿Cómo funciona el flujo de cambios?
 
 1. Tú editas un archivo directamente en GitHub (en el navegador, con un botón de lápiz)
 2. Guardas el cambio (se llama "commit")
-3. Netlify se da cuenta solo y republica el sitio en **30 a 60 segundos**
+3. **GitHub Pages** publica el sitio solo, de forma automática, en **1 a 2 minutos**
 4. Tu cambio queda en vivo
 
 **Sin terminal. Sin programar. Sin instalar nada.**
@@ -17,7 +19,7 @@ Esta guía te explica cómo cambiar el contenido del sitio **sin saber programar
 
 ## Cómo editar un archivo en GitHub paso a paso
 
-1. Entra al repositorio: `https://github.com/TU-USUARIO/terapia-rosa`
+1. Entra al repositorio: `https://github.com/terapiarosa8/terapia-rosa`
 2. Navega a la carpeta donde está el archivo
 3. Click en el archivo para abrirlo
 4. Click en el icono de **✏️ lápiz** (arriba a la derecha)
@@ -25,7 +27,7 @@ Esta guía te explica cómo cambiar el contenido del sitio **sin saber programar
 6. Baja al final de la página
 7. En "Commit changes", escribe una nota corta (ej: "Agregué frase nueva")
 8. Click en **"Commit changes"** verde
-9. Listo. En 30-60 segundos el sitio está actualizado.
+9. Listo. En 1 a 2 minutos el sitio está actualizado.
 
 **Si te equivocas:** vuelve al archivo, en la pestaña "History" puedes deshacer el cambio.
 
@@ -240,7 +242,7 @@ const topics = [
 
 **Archivo:** `public/js/chat.js`
 
-**Qué son las respuestas demo:** lo que Alma responde cuando alguien abre el sitio sin internet, o cuando la IA falla.
+**Qué son las respuestas demo:** son las respuestas de Alma escritas dentro del sitio, que se activan por palabras clave. **Hoy el sitio funciona SOLO con estas respuestas** (modo "navegadora"), sin inteligencia artificial externa — por eso Alma contesta al instante y sin necesidad de servidor. Esta es la sección que usarás para editar a Alma en el día a día. (La IA real de Gemini sería una mejora futura; ver secciones 8, 9 y 11.)
 
 **Qué buscar:** una lista llamada `respuestasDemo`
 
@@ -274,7 +276,9 @@ const topics = [
 
 ---
 
-## 8. Cambiar la personalidad y tono de Alma (la IA)
+## 8. Cambiar la personalidad y tono de Alma (la IA) — *solo si se activa la IA real*
+
+> ⚠️ **Importante:** las secciones 8, 9 y 11 editan el archivo `netlify/functions/chat.js`, que es la **función de IA** de Alma. Esa función **NO está activa en el sitio actual** (que vive en GitHub Pages, sin servidor). Estas secciones aplican **solo si en el futuro se conecta la IA real de Gemini** (hospedando esa función en Netlify u otro servicio). Para editar a Alma hoy, usa la **sección 7**.
 
 **Archivo:** `netlify/functions/chat.js`
 
@@ -292,7 +296,7 @@ const topics = [
 - ❌ La sección **LÍMITES MÉDICOS** (no recomendar tratamientos)
 - Estas dos secciones protegen a las usuarias de respuestas peligrosas
 
-**Después de cambiar el prompt, Netlify republica solo en 30-60 segundos.**
+**Este cambio solo tiene efecto cuando la función de IA esté hospedada y desplegada** (por ejemplo en Netlify). En el sitio actual de GitHub Pages no aplica.
 
 ---
 
@@ -327,7 +331,7 @@ const topics = [
 **Cómo lo activas (opción recomendada: Plausible)**
 
 1. Entra a https://plausible.io y crea cuenta (30 días gratis, después ~$9/mes con descuento para fundaciones)
-2. Agrega el dominio del sitio (ej: `terapia-rosa.netlify.app`)
+2. Agrega el dominio del sitio: `terapiarosa8.github.io`
 3. En GitHub, abre `public/js/analytics.js`
 4. Busca esta línea:
    ```javascript
@@ -335,7 +339,7 @@ const topics = [
    ```
 5. Cámbiala por:
    ```javascript
-   const PLAUSIBLE_DOMAIN = 'terapia-rosa.netlify.app';
+   const PLAUSIBLE_DOMAIN = 'terapiarosa8.github.io';
    ```
 6. Commit. En 60 segundos ya está midiendo.
 
@@ -377,10 +381,10 @@ const topics = [
 **Causa más común:** un error de sintaxis (una coma faltante, una comilla mal cerrada).
 
 **Cómo arreglarlo:**
-1. Entra a Netlify → **Deploys**
-2. Mira el último deploy
-3. Si dice **"Failed"**, click para ver el error
-4. Si dice **"Published"** pero el sitio sale en blanco:
+1. En GitHub, entra a la pestaña **"Actions"** (arriba en el repositorio)
+2. Mira el último flujo **"Deploy to GitHub Pages"**
+3. Si tiene una **✗ roja** (falló), haz click para ver el error
+4. Si tiene **✓ verde** (publicado) pero el sitio sale en blanco:
    - Abre el sitio en el celular
    - Toca rápido 5 veces el logo (en computador: aprieta F12)
    - Mira los mensajes en rojo
@@ -404,7 +408,7 @@ const topics = [
 3. Encuentra el commit que rompió el sitio
 4. Click en los tres puntitos `...` al lado
 5. **"Revert"** (revertir) — crea un nuevo commit que deshace el anterior
-6. Netlify republica solo
+6. GitHub Pages republica el sitio solo en 1-2 minutos
 
 ---
 
