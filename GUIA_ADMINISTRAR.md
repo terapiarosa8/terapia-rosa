@@ -3,7 +3,7 @@ _Manual para la Fundación Alma Rosa: qué es, cómo se creó y cómo administra
 
 Esta guía reúne **todo sobre la aplicación Terapia Rosa**: qué es, cómo se creó, cómo funciona y cómo **administrarla** (cambiar su contenido) **sin saber programar**. Todo se hace desde GitHub en el navegador, sin instalar nada.
 
-> 🌐 **Dónde vive el sitio:** se publica con **GitHub Pages** y está en vivo en **https://terapiarosa8.github.io/terapia-rosa/**. Cada vez que guardas un cambio en la rama `main`, GitHub lo publica solo (automáticamente, con "GitHub Actions"). *(Las secciones 8, 9 y 11 hablan de una función de IA en Netlify que **hoy no está activa**; aplican solo si en el futuro se conecta la IA real de Alma — ver la sección 7.)*
+> 🌐 **Dónde vive el sitio:** se publica con **GitHub Pages** y está en vivo en **https://terapiarosa8.github.io/terapia-rosa/**. Cada vez que guardas un cambio en la rama `main`, GitHub lo publica solo (automáticamente, con "GitHub Actions").
 
 ---
 
@@ -455,7 +455,7 @@ const topics = [
 
 **Archivo:** `public/js/chat.js`
 
-**Qué son las respuestas demo:** son las respuestas de Alma escritas dentro del sitio, que se activan por palabras clave. **Hoy el sitio funciona SOLO con estas respuestas** (modo "navegadora"), sin inteligencia artificial externa — por eso Alma contesta al instante y sin necesidad de servidor. Esta es la sección que usarás para editar a Alma en el día a día. (La IA real de Gemini sería una mejora futura; ver secciones 8, 9 y 11.)
+**Qué son las respuestas demo:** son las respuestas de Alma escritas dentro del sitio, que se activan por palabras clave. **Hoy el sitio funciona SOLO con estas respuestas** (modo "navegadora"), sin inteligencia artificial externa — por eso Alma contesta al instante y sin necesidad de servidor. Esta es la sección que usarás para editar a Alma. (El proyecto incluye además, **sin usar**, el código de una versión opcional con IA real; activarla requeriría la ayuda de un desarrollador y **no es necesaria** para el sitio actual.)
 
 **Qué buscar:** una lista llamada `respuestasDemo`
 
@@ -489,47 +489,7 @@ const topics = [
 
 ---
 
-## 8. Cambiar la personalidad y tono de Alma (la IA) — *solo si se activa la IA real*
-
-> ⚠️ **Importante:** las secciones 8, 9 y 11 editan el archivo `netlify/functions/chat.js`, que es la **función de IA** de Alma. Esa función **NO está activa en el sitio actual** (que vive en GitHub Pages, sin servidor). Estas secciones aplican **solo si en el futuro se conecta la IA real de Gemini** (hospedando esa función en Netlify u otro servicio). Para editar a Alma hoy, usa la **sección 7**.
-
-**Archivo:** `netlify/functions/chat.js`
-
-**Qué buscar:** una variable enorme llamada `SYSTEM_PROMPT` (al inicio del archivo)
-
-**Lo que SÍ puedes editar:**
-- La sección **CONTEXTO**: descripción de a quién está ayudando Alma
-- La sección **TU ROL ESPECÍFICO**: qué cosas debe hacer Alma
-- La sección **TONO**: cómo debe hablar
-- La sección **NO HAGAS**: qué cosas no debe hacer
-- Los recursos que recomienda (lista en TU ROL ESPECÍFICO)
-
-**Lo que NO debes editar (es protección de seguridad):**
-- ❌ La sección **INSTRUCCIONES PERMANENTES** (líneas 15-18 dentro del prompt)
-- ❌ La sección **LÍMITES MÉDICOS** (no recomendar tratamientos)
-- Estas dos secciones protegen a las usuarias de respuestas peligrosas
-
-**Este cambio solo tiene efecto cuando la función de IA esté hospedada y desplegada** (por ejemplo en Netlify). En el sitio actual de GitHub Pages no aplica.
-
----
-
-## 9. Cambiar los números de líneas de crisis
-
-**Archivo:** `netlify/functions/chat.js`
-
-**Qué buscar:** dentro del `SYSTEM_PROMPT`, la sección **DERIVACIÓN A CRISIS**
-
-**Ejemplo actual:**
-```
-- Fundación Alma Rosa: +57 310 415 6261
-- Línea 106 (Bogotá) o Línea 123 opción 4 (otras ciudades de Colombia)
-```
-
-**Si la fundación cambia su número** o si quieren agregar más líneas, edita aquí. Alma comparte estos números cuando detecta una crisis emocional.
-
----
-
-## 10. Activar analytics anónimos (saber cuántas usan el sitio)
+## 8. Activar analytics anónimos (saber cuántas usan el sitio)
 
 **Archivo:** `public/js/analytics.js`
 
@@ -572,21 +532,6 @@ const topics = [
 
 ---
 
-## 11. Cambiar el modelo de Gemini (avanzado, opcional)
-
-**Archivo:** `netlify/functions/chat.js`
-
-**Qué buscar:** la línea con `const GEMINI_MODEL = 'gemini-2.0-flash';`
-
-**Modelos disponibles (todos gratuitos):**
-- `gemini-2.0-flash` — **recomendado.** Rápido, calidad alta, español nativo
-- `gemini-1.5-flash` — versión anterior, también rápida
-- `gemini-1.5-pro` — más reflexivo, pero más lento (puede sentirse lento en chat)
-
-**No cambies esto a menos que la fundación pida más calidad o más rapidez.**
-
----
-
 ## ⚠️ Si algo se rompe (y cómo arreglarlo)
 
 ### Problema: el sitio se queda en blanco
@@ -611,8 +556,6 @@ const topics = [
 | Sitio en blanco | Falta una coma `,` | Buscar la línea que indica el error |
 | Sitio en blanco | Comilla curva `'` en vez de recta `'` | Reemplazar todas las curvas por rectas |
 | Sitio en blanco | Falta `}` o `]` | Contar las llaves: cada `{` debe tener su `}` |
-| Chat dice "no configurado" | Falta `GEMINI_API_KEY` en Netlify | Site settings → Environment variables → agregarla |
-| Chat dice "intenta de nuevo" | Clave de Gemini inválida | Generar una nueva en aistudio.google.com/apikey |
 
 ### Cómo deshacer un cambio en GitHub
 
@@ -625,19 +568,13 @@ const topics = [
 
 ---
 
-## 🔐 Seguridad — lo que NUNCA se debe hacer
+## 🔐 Seguridad — buenas prácticas
 
-- ❌ NUNCA pegar la clave de Gemini en un archivo del sitio
-- ❌ NUNCA compartir la clave por WhatsApp ni por correo
-- ❌ NUNCA hacer público el repo si la clave alguna vez estuvo ahí
-- ❌ NUNCA borrar la sección **INSTRUCCIONES PERMANENTES** del system prompt
-- ❌ NUNCA borrar la sección **LÍMITES MÉDICOS** del system prompt
+- ✅ El sitio **no guarda datos personales**: no hay cuentas ni login, y lo que cada persona escribe en el diario o el muro queda **solo en su propio celular** (no se sube a ningún servidor).
+- ❌ **NUNCA** pongas contraseñas, llaves de API ni datos sensibles dentro de los archivos del sitio: la carpeta `public/` y el repositorio son **públicos** (cualquiera puede verlos).
+- ❌ **NUNCA** compartas claves o accesos por WhatsApp ni por correo.
 
-Si por accidente la clave queda expuesta:
-1. Entra a https://aistudio.google.com/apikey
-2. Borra esa clave
-3. Crea una nueva
-4. Actualiza Netlify con la nueva
+> Si algún día se activa la versión con IA real (Gemini), hay reglas adicionales para cuidar la llave de la API — pídele a un desarrollador que las aplique.
 
 ---
 
