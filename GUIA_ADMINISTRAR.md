@@ -199,8 +199,8 @@ const topics = [
     icon: '🥗',
     title: 'Nutrición consciente',
     sub: 'Comer para nutrirte y disfrutar',
-    accent: '#C9968A',
-    bgFrom: '#E0C4B6', bgTo: '#C9968A',
+    accent: '#E95178',
+    bgFrom: '#FAD9DE', bgTo: '#E95178',
     items: [
       { title: 'Lo que tu cuerpo agradece',
         sub: 'Comer despacio · sin pantallas',

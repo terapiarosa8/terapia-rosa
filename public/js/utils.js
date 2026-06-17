@@ -4,10 +4,10 @@
 
 // ─── Paleta ──────────────────────────────────────────────────
 const ALMA = {
-  rosaBase: '#E0C4B6', rosaMedio: '#D4AFA0', rosaFuerte: '#C9968A',
-  rosaProfundo: '#8B5E4C', verdeAlma: '#A8AE93', verdeOscuro: '#878D75',
-  crema: '#F2EBE0', cremaProfunda: '#E8DECE', papel: '#FAF4EA',
-  textoOscuro: '#2E2420', textoSuave: '#7A6357',
+  rosaBase: '#FAD9DE', rosaMedio: '#F2A0AE', rosaFuerte: '#E95178',
+  rosaProfundo: '#C0335B', verdeAlma: '#D84E7A', verdeOscuro: '#A82C54',
+  crema: '#FDF2F4', cremaProfunda: '#FBE6EA', papel: '#FFFFFF',
+  textoOscuro: '#2E2328', textoSuave: '#83646C',
 };
 
 // ─── Frases del día ───────────────────────────────────────────
