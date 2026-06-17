@@ -268,24 +268,27 @@ Resumen:
 
 ---
 
-## Estado del proyecto (2026-04-29)
+## Estado del proyecto (2026-06-17)
 
 ### ✅ Completado
 - 13 páginas HTML funcionales
 - Sistema de diseño completo (paleta, tipografía, componentes)
+- **Identidad visual Alma Rosa aplicada** (paleta Pantone 708C/191C + logo de la Fundación), conservando el nombre "Terapia Rosa" y las tipografías (Cormorant Garamond / Italiana / Jost)
 - Alma como navegadora inteligente (30+ frases reconocidas → recomendaciones con botones)
 - Flor SVG animada en Respiración (esfera + pétalos + música Web Audio)
 - 3 juegos: sopa de palabras, memoria, acertijos del alma
 - Biblioteca con 3 temas y 3 formatos (Leer/Escuchar/Ver)
 - Diario privado con prompts y descarga .txt
 - Muro de post-its (curados + propios)
+- **Videos reales de yoga y meditación cargados en Bienestar** ✅ (ya no es pendiente)
 - Netlify Function con seguridad completa (rate limit, prompt injection, sanitización)
 - Auditoría de seguridad (AUDITORIA_SEGURIDAD.md)
+- **Publicado en vivo → https://terapiarosa8.github.io/terapia-rosa/** (GitHub Pages, deploy automático con GitHub Actions desde `main` sirviendo `public/`)
+- Nombre confirmado: "Terapia Rosa"
 
 ### 🔲 Pendiente para producción
-- Reemplazar videoIds de YouTube con videos reales de la fundación
-- Grabar podcasts reales para tab "Escuchar" en Biblioteca
-- Configurar API key de Gemini en Netlify
-- Primera publicación en Netlify
-- Confirmación del nombre "Terapia Rosa" con la fundación
+- Grabar podcasts reales para el tab "Escuchar" en Biblioteca
+- **Chat de Alma con IA real:** el sitio está en **GitHub Pages** (estático, sin funciones serverless), pero el frontend llama a `/.netlify/functions/chat`. Para que la IA real funcione en producción hay que hospedar esa función (Netlify u otro proveedor) y apuntar el chat allí; mientras tanto, el chat depende de las respuestas demo.
 - Dominio personalizado (opcional)
+
+> **Nota de hosting:** este repo se publica con **GitHub Pages** (no Netlify). Varias secciones de abajo todavía mencionan Netlify como hosting — aplican solo si en algún momento se migra el sitio o se hospeda la función del chat en Netlify.
